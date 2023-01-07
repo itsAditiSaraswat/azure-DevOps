@@ -206,6 +206,88 @@ That's it, your existing application now has a local repository and is connected
 
 ### 3.1 Create a build pipeline in Azure DevOps
 
+Once code changes are ready to be integrated into higher level environments, having a build pipeline configured saves a lot of time, and is a reliable way to integrate such changes into your application.
+
 **STEPS**<br>
 
-**Step-1:**
+**Step-1:** Navigate to your Azure DevOps project page by going to dev.azure.com/your-organization-name. On the left-hand navigation menu, find the **Pipelines** option and click on it to go to the pipeline section of your project.
+![1](https://user-images.githubusercontent.com/102405945/211164463-563955e1-1665-4b94-bbda-a6fd2da0d218.png)
+
+**Step-2:** To create a new build, click on the **Create pipeline** button in the center of the screen.
+![2](https://user-images.githubusercontent.com/102405945/211164467-b7dc8ec7-0eb4-49c1-8ab6-b9c9be7697ba.png)
+
+**Step-3:** You are brought to the build pipeline wizard where it will configure the initial settings for a build. Click the link underneath that says, **"Use the classic editor"**.
+![3](https://user-images.githubusercontent.com/102405945/211164472-51f3ae86-f68a-4e00-851b-e7549b2ba446.png)
+
+**Step-4:** Choose the source repository that will be used for this build pipeline. We'll use **Azure Repos Git** for our source. If you already have a repository connected to this project, you'll see that the team project and repository dropdowns are already populated. Click **Continue**.
+![4](https://user-images.githubusercontent.com/102405945/211164473-c0315165-97f4-4c7f-9407-9aa09abc0372.png)
+
+**Step-5:**  Now you're given the chance to select from many build templates based on the type of application you are building. Select the **ASP.NET Core (.NET framework)** listed under the other's category, as that's what we're building. Then click **Apply**.
+![5](https://user-images.githubusercontent.com/102405945/211164479-fc79757c-6c25-45ef-aea8-4e102b480fad.png)
+
+**Step-6:** Now, click on the arrow and then click the **save** option. A saved build pipeline window will then appear. You can leave the select folder at the root. And if you'd like, you can leave a comment about this build pipeline. Then, just click **Save**.
+![6](https://user-images.githubusercontent.com/102405945/211164488-7623fda7-c2ee-41f5-a3d2-675161cc511f.png)
+
+And that's it, you've just created build pipeline for your .NET Core application.
+
+
+
+### 3.2 Configure your build steps
+
+Configuring our build means adapting the provided build templates to perform the actual steps we need to build our project. Let's see how to do that with a .NET core build template including the addition of a brand new step.
+
+**STEPS**<br>
+
+**Step-1:** On the left-hand Navigation menu in Azure DevOps project overview, click **pipelines** icon to go to your builds. You should see a list of all your build pipelines and the history of the current one that's selected. Select the build pipeline you'd like to configure.
+![1](https://user-images.githubusercontent.com/102405945/211164958-6e035956-6db2-4839-be29-a65624a8ef70.png)
+
+**Step-2:** Towards the top-right of the screen, click on **Edit** button.
+![2](https://user-images.githubusercontent.com/102405945/211164960-9399bc01-e41f-4f10-a850-628be7bab059.png)
+
+**Step-3:** You'll be brought to the build's overview page. To add a task, click on the **Plus** button located on the Agent Job One header.
+![3](https://user-images.githubusercontent.com/102405945/211164964-ab8ba1a0-dfd7-42c0-a296-4d5a0023b83e.png)
+
+**Step-4:** We will need to add NPM install command to download our front-end dependencies. To quickly search for it, use the search box towards the top-right and enter NPM. The top matching results should display. Click on the task NPM to select it and then add the task by clicking the **Add** button towards the right. 
+![4](https://user-images.githubusercontent.com/102405945/211164971-32918649-63c4-4ea4-82c4-de9dd20aa025.png)
+
+**Step-5:** You'll see the NPM task added to the bottom of our phase group. We'll need to move it to the appropriate spot towards the top. To do this, click and drag the right edge of the NPM step to the right position. The last step is to provide the correct path to our package.json file in the working folder that contains package.json field. Make sure to select the parent folder of the package.json file and not the file itself.
+![5](https://user-images.githubusercontent.com/102405945/211164974-3d493de1-4127-45a3-8826-8fc8dbd5cc28.png)
+
+**Step-6:** Finally, click on the dropdown menu and click **Save** to save your changes. You can add a comment to describe the changes you have made to this pipeline and then click **Save**.
+![7](https://user-images.githubusercontent.com/102405945/211164977-deef9bf6-9fd3-4d20-abf0-8f65a9ad08da.png)
+
+And that's it. Your build is now configured to run the steps outlined in your pipeline.
+
+
+
+### 3.3 Add build pipeline triggers
+
+One of the most powerful parts of an automated pipeline is the ability to kickstart processes upon some new code changes being pushed to a repo.
+
+**STEPS**<br>
+
+**Step-1:** Go to the Azure DevOps Project overview page for our project. On the left-hand navigation menu, click on the blue rocket icon to go to your builds. You should see a list of all your build pipelines and the history of the current one that's selected. Select the build pipeline you'd like to set up a build trigger for. Towards the top-right of the screen, you'll click on **Edit** button.
+![1](https://user-images.githubusercontent.com/102405945/211165217-c9b814c9-8163-4e07-9c31-12482e7f96d2.png)
+
+**Step-2:** You'll be brought to the builds overview page. Towards the top-left, find the **Triggers** tab and select it. Here, you'll see many trigger options. For now, we'll focus on the continuous integration trigger. In order for build triggers to work, ensure that the Enable Continuous Integration checkbox is selected. When you do, you'll see some more options appear below it. One of those is another checkbox option to batch changes while a build is in progress. This option tries to combine as many changes that belong to the same build into one, including new changes that are pushed to a repo while a build is running. This means you won't have multiple builds running one after the other.
+![2](https://user-images.githubusercontent.com/102405945/211165219-266e52bb-3b1c-41f0-8763-e05d3c1b4c4a.png)
+
+**Step-3:** Go to the dropdown and click **Save**. Then click **Save** on the Save Build Pipeline window.
+![3](https://user-images.githubusercontent.com/102405945/211165222-c764c219-6474-440f-bd25-ea697767fc52.png)
+
+And that's it. You'll see your build kickoff the next time you push a code change to your remote master branch.
+
+
+
+### 3.4 Queue manual builds when necessary
+A great part about Azure DevOps is that requeuing builds is an easy process. Let's see how to do that if we ever need to requeue a failed or non-kickstarted build.
+
+**STEPS**<br>
+
+**Step-1:** Go to Azure DevOps project overview. On the left hand navigation menu, find the blue rocket icon and click on it to go to your builds. You should see a list of all your build pipelines and the history of the current one that's selected. Select the build pipeline you'd like to requeue.Towards the top right of the screen, you'll click on **queue** button.
+![1](https://user-images.githubusercontent.com/102405945/211165393-4911c397-f655-44c8-bc99-3ffbc5f431bc.png)
+
+**Step-2:** A queue build prompt for your selected build pipeline will appear. This prompt is incredibly helpful if you need to rerun a specific build down to the branch, or tags or commits. For now, we'll leave the agent pool to the default of Hosted VS2017, as that's what our build requires for our .NET core application. Finally, leave the default variables and demands options. Since we are requeuing a previous build, these options don't need to be changed. However, they're there for your use should you need to requeue a very specific build. Lastly, click the Run button towards the bottom right of the prompt.
+![2](https://user-images.githubusercontent.com/102405945/211165396-54a7d91a-9080-4dc4-9374-7876e9fe5496.png)
+
+That's it. Your build will be requeued, and start when the next agent is available to run your build.
