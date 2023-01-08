@@ -1,5 +1,18 @@
-# Azure-DevOps
+# Developing CI/CD solutions with Azure DevOps
+---
 
+| &nbsp; | &nbsp; |
+| --- | ----------- |
+| **Objective** | - To implement an automated development workflow using Azure DevOps for .NET Core application <br>- To create build and release pipelines in Azure DevOps |
+| **Approach** | - Created a web app in both Visual Studio and the Azure portal using Azure App service. <br>- Set up source control for the app using Azure DevOps and GitHub |
+| **Impact** | - Effectively kept up with the demands to field a constant flow of requests for new features, updates, and bug fixes by implementing an automated development workflow</br>- Set up proper source control for web app and configure a fully automated continuous integration and continuous delivery (CI/CD) pipeline in Azure |
+<br>
+
+**Primary Azure Technology:** Azure DevOps, Azure App Services
+
+**Other Technology:** GitHub, Visual Studio
+
+<br><br>
 ---
 ## 1. Create a Web App with the Azure Service
 
