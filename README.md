@@ -291,3 +291,169 @@ A great part about Azure DevOps is that requeuing builds is an easy process. Let
 ![2](https://user-images.githubusercontent.com/102405945/211165396-54a7d91a-9080-4dc4-9374-7876e9fe5496.png)
 
 That's it. Your build will be requeued, and start when the next agent is available to run your build.
+
+
+
+---
+## 4. Configure a Continuous Deployment Pipeline
+
+### 4.1 Create a release pipeline in DevOps
+
+After building your app, release pipelines take care of deploying your app to the environments and specifications you designate. Let's set up a release pipeline in Azure DevOps.
+
+**STEPS**<br>
+
+**Step-1:** Go to Azure DevOps project overview page. On the left-hand navigation menu, click blue rocket icon, and then select the **Releases** option. 
+![1](https://user-images.githubusercontent.com/102405945/211193941-af3ae095-7f8c-4f5c-83aa-96f0c506865f.png)
+
+**Step-2:** You are brought to the releases area. Here, you'll see your list of releases and their statuses in history, if you have any. To create a new release, click on the **New pipeline** button on the center of the screen.
+![2](https://user-images.githubusercontent.com/102405945/211193950-788e0b15-30dc-4426-bd3d-55cd38026538.png)
+
+**Step-3:** You are brought to the release pipeline editor where we'll configure the initial settings for our release. A prompt will ask you to select a release template from the many that are available. We'll be using the **Azure App Service deployment** template, which is the first option. Select it. And then click **Apply**. This will apply a preconfigured task into your first stage,
+![3](https://user-images.githubusercontent.com/102405945/211193954-812fdb3e-dbef-4420-84d7-0dea7055317f.png)
+
+**Step-4:** Another prompt will ask you for a stage name. For this stage, we will call it development. You'll see the stage on our release editor, automatically update with the development name. Right under the name, you'll also see the previously added task denoted by the **one job, one task** link. Click on this link to open the stage configuration editor.
+![4](https://user-images.githubusercontent.com/102405945/211193959-fab7b58a-433c-41d8-af4b-17024512a2cf.png)
+
+**Step-5:** Here, you'll see your list of release pipeline tasks on the left hand side, and the details of a selected task on the right. The first setting we need to configure is the Azure subscription we want this release to belong to. Click the dropdown and find the subscription you want to use. Then click the authorized button. After authorization is complete on your subscription, the app service name dropdown should populate with your available app services. Select your app service name. All that's left is to give your release pipeline a name.
+![5](https://user-images.githubusercontent.com/102405945/211193964-ef437051-6b5a-44fc-bc7a-4cb415ef7244.png)
+
+**Step-6:**  Click **Save**. And then click OK.
+![6](https://user-images.githubusercontent.com/102405945/211193970-f083a718-4bdf-4344-9163-039db2db7cba.png)
+
+That's it, you just created a release pipeline for your .NET Core application.
+
+
+
+### 4.2 Set up your artifact
+
+Release pipelines deploy our applications to the environments we specify, but it won't know what to deploy if we don't provide it with a source. Just as the build pipelines require a source repo to kickstart its processes, a release pipeline needs a source artifact to start its own. Let's set up our release pipeline to use a build artifact.
+
+**STEPS**<br>
+
+**Step-1:** Go to the Azure DevOps Project overview page. On the left-hand navigation menu, hover over the little blue rocket icon and select the **Releases** option. 
+![1](https://user-images.githubusercontent.com/102405945/211195196-434e9b7a-23a6-4b37-b6a7-3256338eccae.png)
+
+**Step-2:** You are brought to the releases area. Click on the release pipeline you want to set with a build artifact. For me, that's coffee-critique-release. Then towards the top-right of the screen, click on the **Edit** button.
+![2](https://user-images.githubusercontent.com/102405945/211195200-6efac943-6d23-4e0d-b227-aa3193c6cdba.png)
+
+**Step-3:** You are brought to the release pipeline editor. Click the **Add an Artifact** action located within the Artifacts section. The Add an Artifact panel will slide out. Choose the **build** source type. Next, select your main project and source build pipeline. After selecting a build pipeline, you'll see a few more options appear. Leave the default version option of latest. This will deploy the latest version of our build artifact whenever a new release is created. Alternatively, you can get even more granular control over which versions to release by using options like latest from a specific branch with tags or a specific version.Finally, click the **Add** button. 
+![3](https://user-images.githubusercontent.com/102405945/211195202-0c42603b-e496-46e5-93f2-8a068621aa64.png)
+
+**Step-4:** Save your changes before leaving the page. And then hitting **OK**.
+![4](https://user-images.githubusercontent.com/102405945/211195211-ba0f3759-a606-45f7-a118-f6a3c784f55d.png)
+
+That's it. You've set up a build artifact for your release pipeline to use.
+![5](https://user-images.githubusercontent.com/102405945/211195214-b500415e-0490-48e8-a8df-6aad611e5152.png)
+
+
+
+### 4.3 Add release pipeline triggers
+
+Releases can be automatically triggered, just like builds. Let us work on
+release trigger.
+
+**STEPS**<br>
+
+**Step-1:** Go to the Azure DevOps project overview page. On the left-hand navigation menu, hover over the little blue rocket icon, then select the **Releases** option. 
+![1](https://user-images.githubusercontent.com/102405945/211195575-37f30ed3-9915-42f2-9990-8d2a34919409.png)
+
+**Step-2:** You are brought to the releases area. Click on the release pipeline you want to enable triggers on. Then towards the top-right of the screen, click the **Edit** button.
+![2](https://user-images.githubusercontent.com/102405945/211195558-0baeae81-88ad-4e16-926d-bd02f193debe.png)
+
+**Step-3:** You're brought to the release pipeline editor. Within the artifact section, you should see your artifact. On the top-right corner of your artifact, is a little lightning bolt icon. Click on it. 
+![3](https://user-images.githubusercontent.com/102405945/211195564-4285c99f-6c5c-4e68-b18f-03596331de7f.png)
+
+**Step-4:** The continuous deployment trigger panel will slide out. To enable the continuous deployment trigger, click on the toggle. It should now say enabled, and a few more options will appear. While we want our release pipeline to automatically trigger, we only want to kickstart it on the builds and branches that make sense. Otherwise, we'll have a whole bunch of releases queued that we may not want. Since this is our dev release, let's filter our trigger to only respond to the dev branch. Click on the add button to add a branch filter. Ensure that the type is set to include. For the build branch, select the dev branch. This tells the release to keep track of our dev branch and watch for new builds that come from it. That's it. Exit out of this panel by clicking the X icon at the top-right.
+![4](https://user-images.githubusercontent.com/102405945/211195585-d280c9e9-b6d3-471c-b0a3-48b4b16c582f.png)
+
+**Step-5:** Save your changes. You can also leave a comment that says what we've added and then click OK.
+![5](https://user-images.githubusercontent.com/102405945/211195588-ad0e2973-206e-4a72-b026-e064bae13494.png)
+
+That's it. You have now enabled a continuous deployment trigger on your release pipeline.
+
+
+
+### 4.4 Configure your stages
+
+Releases usually follow a pattern. First, deployment to a dev environment, then to a QA testing environment, and finally production. No matter how many stages you have I'll show you how to configure multiple stages for all of your environments.
+
+**STEPS**<br>
+
+**Step-1:** Go to the Azure DevOps project overview page. On the left-hand navigation menu, hover over the little blue rocket icon, then select the **Releases** option. You are brought to the Releases area. Click on the release pipeline you want to configure stages on. For me, that's coffee-critique-release. Then towards the top right of the screen, click the **Edit** button.
+![1](https://user-images.githubusercontent.com/102405945/211196125-080cca4c-0219-4ddc-81ad-ec25a44e9c66.png)
+
+**Step-2:** You are brought to the release pipeline editor where we will first add a QA stage for our pipeline. For our QA stage, we can clone our development stage as it will require the same steps. To do this, select the **Development** stage, then click the add button next to the stage's label. Then, click the **Clone stage** option. A copy of that stage will be created next to your development stage. Let's change the stage name to QA.
+![2](https://user-images.githubusercontent.com/102405945/211196128-9c5cbaf7-82a9-4c18-a71a-ee2f25d13020.png)
+
+**Step-3:** Next, click on the **1 job, 1 task** link under the QA stage. As expected, the same configuration has been copied over from our development stage.
+![3](https://user-images.githubusercontent.com/102405945/211196130-28cd863b-744a-4a05-966d-ed323aa2297a.png)
+
+**Step-4:** We need to change this to point to our QA resources, however. Under the App service name dropdown, select the appropriate app service that our QA instance needs to be deployed to.
+![4](https://user-images.githubusercontent.com/102405945/211196133-8be2eef9-9a8c-43c7-b380-a623126c68c3.png)
+
+**Step-5:** Then, go back to the pipeline view by clicking the **Pipeline** tab. To the left of the QA stage, you'll see a set of icons which denote the pre-deployment conditions, click on it. A Pre-deployment conditions panel slides out. Here, you can configure specific conditions to be met before your next stage is deployed. Conveniently, Azure DevOps has selected the correct default of After stage as well as the Development stage. This means the release to the QA stage won't start until the release to the development stage is complete. That's it, our QA stage is configured.
+![5](https://user-images.githubusercontent.com/102405945/211196154-cff073d7-f0bb-41ca-947d-48e11898253d.png)
+
+**Step-6:** Now, let's add our production stage. Exit out of the Pre-deployment conditions panel. Then, select your **QA stage** if not already selected. Close the QA panel that automatically appears so you can see what you're doing.
+![6](https://user-images.githubusercontent.com/102405945/211196165-61f8fd63-4999-451f-a036-939ed8b6fe45.png)
+
+**Step-7:** Clone your QA stage by clicking Add next to the Stages label, then Clone stage. This configuration will be the same with the exception of the environment
+![7](https://user-images.githubusercontent.com/102405945/211196178-0c8c1740-3806-41a8-abfb-2749dd28fd05.png)
+
+**Step-8:** Update the stage name to Production and then click on the **1 job, 1 task** link under the Production stage and make sure to update the app service name to your production instance. 
+![8](https://user-images.githubusercontent.com/102405945/211196184-2501db11-1698-48ad-baf7-d6f4923e2343.png)
+![9](https://user-images.githubusercontent.com/102405945/211196189-40a9da4e-879a-467b-b930-603ac4673a33.png)
+
+**Step-9:** All that's left is to save your changes. Then, add a comment so we can keep a good history of the changes to our release pipeline. And then, click **OK**.
+![10](https://user-images.githubusercontent.com/102405945/211196193-c3a88cf1-48e8-4447-befb-af86384eaaad.png)
+
+That's it, you added and configured a QA and production stage to your release pipeline.
+
+
+
+### 4.5 Set up deployment conditions
+
+When code goes into production we want to be sure that it is deployed intentionally and with any necessary approvals. Let us see an example of how to use pre-deployment and post-deployment conditions to fulfill release and compliance requirements.
+
+**STEPS**<br>
+
+**Step-1:** Go to the Azure DevOps project overview page. On the left hand navigation menu, hover over the blue rocket icon, then click on the **Releases** option. Click on the release pipeline you want to configure pre-deployment and post-deployment conditions on. Then towards the top right of the screen, click the **Edit** button. 
+![1](https://user-images.githubusercontent.com/102405945/211196753-7708a1db-847d-4e07-829a-27c9f85068ef.png)
+
+**Step-2:** You are brought to the release pipeline editor. One common post-deployment condition is to have a QA approval. To set this up, click on single user icon to the right of the QA stage.
+![2](https://user-images.githubusercontent.com/102405945/211196758-237af4ba-3a5a-4213-a5d4-e76c140347fb.png)
+
+**Step-3:** A post-deployment conditions panel will slide open. Click on the toggle to enable post-deployment approvals. A few more options will appear. In the approvers' field, search for a member of your QA team or a user who will act as a QA approver and add them to the list. If you have groups, say a QA approvers' group, you can add that too. Note that when you add a group, only one person from that group has to approve, not the entire group. So if you need multiple approvers, you need to add them separately. That's all for post-deployment conditions. We have set it up so that a release to production cannot be kick started unless a QA approver has approved to the QA release first. Exit out of the post-deployment conditions panel.
+![3](https://user-images.githubusercontent.com/102405945/211196763-e01e9fdc-0306-42a3-885c-9fc3ba737a91.png)
+
+**Step-4:** On the production stage, click on the set of icons to its left. This opens the pre-deployment conditions panel. 
+![4](https://user-images.githubusercontent.com/102405945/211196771-9ee767de-c360-4624-bbed-ab9df851d5f4.png)
+
+**Step-5:** For production, let's not only enable another set of approvals, but ensure that the user requesting the release is not the same as the approver. This prevents a single developer from forcefully deploying code without review. This is also a common policy set up to meet compliance requirements. Scrolling towards the bottom, find the pre-deployment approvals and toggle it so that it becomes enabled. Some options will appear. Search for users to be your pre-deployment approvers to production. This is usually a product manager or a release manager. If anything, try to make sure that these are different users than your QA post-deployment approvers. Lastly, under approval policies, check the user requesting a release or deployment should not approve it option.
+![5](https://user-images.githubusercontent.com/102405945/211196774-1d6e51fe-35c5-4764-a56e-66bd68cdbb2f.png)
+
+**Step-6:** Vave your changes. Be sure to add a comment about the pre-deployment and post-deployment conditions we have added. Then click **OK**.
+![6](https://user-images.githubusercontent.com/102405945/211196777-4d519af1-9dda-48eb-86bf-caada7660086.png)
+
+That's it. You've now added valuable pre-deployment and post-deployment conditions to fulfill depending on the environment that's being deployed to, not to mention, you're probably also fulfilling some compliance requirements.
+
+
+
+### 4.6 Queue manual releases when necessary
+
+Sometimes releases can fail or get stuck. Other times we need to create a specific release to be redeployed.
+
+**STEPS**<br>
+
+**Step-1:** Go to the Azure DevOps project overview page. On the left-hand navigation menu, hover over the little blue rocket icon, then select the **Releases** option. You are brought to the Releases area. Select the release pipeline you'd like to re-queue.
+![1](https://user-images.githubusercontent.com/102405945/211197545-1b3ce8bd-5bad-4920-976d-3755032e9da9.png)
+
+**Step-2:** Towards the center of the screen, click on **Create Release** button.
+![2](https://user-images.githubusercontent.com/102405945/211197550-ef144d75-efa3-4c22-ab50-b06b55cd65e2.png)
+
+**Step-3:** A create a new release prompt for your selected release will appear. Select the stage you wish to trigger manually. Add a release description. Lastly, click the **Create** button towards the bottom.
+![3](https://user-images.githubusercontent.com/102405945/211197561-e8eb3c29-6f29-489a-b9e9-77ffb21fc403.png)
+
+That's it. Your release will be re-queued and start when the next agent is available to run your release.
+![4](https://user-images.githubusercontent.com/102405945/211197569-95e8f136-40bc-4866-b84b-6e7d2727b3f5.png)
